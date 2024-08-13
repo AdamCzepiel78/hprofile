@@ -1,5 +1,7 @@
 name: Hprofle Actions
 on: workflow_dispatch
+env: 
+  AWS_REGION: eu-central-1
 jobs:
   
   Testing:
@@ -57,4 +59,15 @@ jobs:
           - sed -i "s/^jdbc.username.*$/jdbc.username\={{ secrets.RDS_USER }}/" src/main/resources/application.properties
           - sed -i "s/db01/${{ secrets.RDS_ENDPOINT }}/" src/main/resources/application.properties
             
-      
+      - name: upload image to ECR
+        uses: appleboy/docker-ecr-action@master
+        with:
+          access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          secret_key: ${{ secrets.AWS_SECRETS_ACCESS_KEY }}
+          registry: ${{ secrets.REGISTRY }}
+          repo: aczapp
+          region: ${{ secrets.AWS_REGION }}
+          tags: latest,${{ github.run_number }}
+          daemon_off: false
+          dockerfile: ./Dockerfile
+          context: ./ 
