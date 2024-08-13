@@ -1,6 +1,7 @@
 name: Hprofle Actions
 on: workflow_dispatch
 jobs:
+  
   Testing:
     runs-on: ubuntu-latest
     steps:
@@ -22,7 +23,6 @@ jobs:
 
       - name: Setup SonarQube
         uses: warchant/setup-sonar-scanner@v7
-      
       # Run sonar-scanner
       #- name: SonarQube Scan
       #  run: sonar-scanner
@@ -44,3 +44,17 @@ jobs:
       #  env:
       #    SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       #    SONAR_HOST_URL: ${{ secrets.SONAR_URL }} #OPTIONAL
+        
+  BUILD_AND_PUBLISH:
+    runs-on: ubuntu-latest 
+    steps:
+      - name: Code Checkout 
+        uses: actions/checkout@v4
+
+      - name: Update application.properties file 
+        run: | 
+          - sed -i "s/^jdbc.password.*$/jdbc.password\={{ secrets.RDS:PASS }}/" src/main/resources/application.properties
+          - sed -i "s/^jdbc.username.*$/jdbc.username\={{ secrets.RDS_USER }}/" src/main/resources/application.properties
+          - sed -i "s/db01/${{ secrets.RDS_ENDPOINT }}/" src/main/resources/application.properties
+            
+      
