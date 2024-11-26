@@ -29,8 +29,8 @@ jobs:
         run: sonar-scanner
             -Dsonar.host.url=${{ secrets.SONAR_URL }}
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
-            -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
-            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT }}
+            -Dsonar.organization=adamczepiel78
+            -Dsonar.projectKey=hprofile
             -Dsonar.sources=src/
             -Dsonar.junit.reportsPtah=target/surefire-reports/
             -Dsonar.jacoco.reportsPath=target/jacoco.exec
