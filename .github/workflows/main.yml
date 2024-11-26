@@ -17,7 +17,7 @@ jobs:
       - name: Checkstyle 
         run: mvn checkstyle:checkstyle
       
-      - name: Setup Java 17 
+      - name: Setup Java 11 
         uses: actions/setup-java@v4 
         with: 
           distribution: 'temurin'
@@ -28,8 +28,8 @@ jobs:
       - name: SonarQube Scan
         run: sonar-scanner -X
             -Dsonar.host.url=https://sonarcloud.io
-            -Dsonar.login=a1d3a3a92d7ab8074cd8197899776a8ff41ccb7e
-            -Dsonar.organization=adamczepiel78
+            -Dsonar.login=43c6d22c2e59f304c8a7345e47d499f1f655faaa
+            -Dsonar.organization=adam-czepiel
             -Dsonar.projectKey=hprofile
             -Dsonar.sources=src/
             -Dsonar.junit.reportsPtah=target/surefire-reports/
