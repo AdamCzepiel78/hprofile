@@ -26,7 +26,7 @@ jobs:
         uses: warchant/setup-sonar-scanner@v7
         # Run sonar-scanners
       - name: SonarQube Scan
-        run: echo "sonar-scanner
+        run: sonar-scanner
             -Dsonar.host.url=${{ secrets.SONAR_URL }}
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
             -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
@@ -35,5 +35,5 @@ jobs:
             -Dsonar.junit.reportsPtah=target/surefire-reports/
             -Dsonar.jacoco.reportsPath=target/jacoco.exec
             -Dsonar.java.checkstyle.reportsPath=target/checkstyle-result.xml
-            -Dsonar.java.binaries=target/test-classes/com/visualpathit/account"
+            -Dsonar.java.binaries=target/test-classes/com/visualpathit/account
     
