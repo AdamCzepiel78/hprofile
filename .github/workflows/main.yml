@@ -1,9 +1,17 @@
 name: Hprofile Actions 
-on: workflow_dispatch 
+on: 
+  push: 
+    branches: 
+      - main 
+      - dev 
 jobs: 
   Testing: 
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout files 
+      - name: Code checkout 
         uses: actions/checkout@v4
+      - name: Maven test 
+        run: mvn test
+      - name: Checkstyle 
+        run: mvn checkstyle:checkstyle
     
