@@ -4,6 +4,8 @@ on:
     branches: 
       - main 
       - dev 
+env: 
+  AWS_REGION: ${{ secrets.AWS_REGION }}
 jobs: 
   Testing: 
     runs-on: ubuntu-latest
@@ -22,9 +24,11 @@ jobs:
         with: 
           distribution: 'temurin'
           java-version: '11'
+
       - name: Setup SonarQube
         uses: warchant/setup-sonar-scanner@v7
-        # Run sonar-scanner
+        
+      # Run sonar-scanner
       - name: SonarQube Scan
         run: sonar-scanner -X
             -Dsonar.host.url=${{ secrets.SONAR_URL }}
@@ -42,7 +46,32 @@ jobs:
         id: sonarqube-quality-gate-check
         uses: sonarsource/sonarqube-quality-gate-action@master
         # Force to fail step after specific time.
-        timeout-minutes: 3
+        timeout-minutes: 5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_URL }}
+
+  BuildAndPublish:
+    runs-on: ubuntu-latest
+    steps: 
+      - name: Code checkout 
+        uses: actions/checkout@v4
+
+      - name: Update application.properties file 
+        run: |
+          sed -i "s/^jdbc.username.*$/jdbc.username\=${{ secrets.RDS_USER}}/" src/main/resources/application.properties
+          sed -i "s/^jdbc.password.*$/jdbc.password\=${{ secrets.RDS_PASS}}/" src/main/resources/application.properties
+          sed -i "s/sd01/${{ secrets.RDS_ENDPOINT }}/" src/main/resources/application.properties
+          
+      - name: Upload Image to ECR 
+        uses: appleboy/docker-ecr-action
+        with: 
+          access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          registry: ${{ secrets.REGISTRY }}
+          repo: ${{ secrets.ECR_REPOSITORY }}
+          region: ${{ env.AWS_REGION }}
+          tags: latest,${{ github.run_number}}
+          daemon_off: false
+          dockerfile: ./Dockerfile
+          context: ./
