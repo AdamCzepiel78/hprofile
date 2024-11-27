@@ -64,7 +64,7 @@ jobs:
           sed -i "s/sd01/${{ secrets.RDS_ENDPOINT }}/" src/main/resources/application.properties
           
       - name: Upload Image to ECR 
-        uses: appleboy/docker-ecr-action
+        uses: appleboy/docker-ecr-action@master
         with: 
           access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
           secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
