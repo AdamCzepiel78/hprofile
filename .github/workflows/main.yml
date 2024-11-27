@@ -26,11 +26,9 @@ jobs:
         uses: warchant/setup-sonar-scanner@v7
         # Run sonar-scanner
       - name: SonarQube Scan
-        env: 
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: sonar-scanner -X
             -Dsonar.host.url=${{ secrets.SONAR_URL }}
-            -Dsonar.login=$SONAR_TOKEN
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
             -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
             -Dsonar.projectKey=${{ secrets.SONAR_PROJECT }}
             -Dsonar.sources=src/
@@ -39,4 +37,12 @@ jobs:
             -Dsonar.java.checkstyle.reportsPath=target/checkstyle-result.xml
             -Dsonar.java.binaries=target/test-classes/com/visualpathit/account
             -Dsonar.verbose=true
-    
+      
+      - name: SonarQube Quality Gate check
+        id: sonarqube-quality-gate-check
+        uses: sonarsource/sonarqube-quality-gate-action@master
+        # Force to fail step after specific time.
+        timeout-minutes: 3
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_URL }}
