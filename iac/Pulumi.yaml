@@ -1,0 +1,11 @@
+name: aws-ghactions
+description: Deploy a spring boot app to aws
+runtime:
+  name: python
+  options:
+    toolchain: pip
+    virtualenv: venv
+config:
+  pulumi:tags:
+    value:
+      pulumi:template: aws-python
