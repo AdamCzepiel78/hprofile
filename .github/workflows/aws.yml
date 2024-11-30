@@ -1,9 +1,6 @@
 name: Deploy required aws resources
 on: 
   workflow_dispatch: 
-env:
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }} 
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 jobs:
   DeployAWS:
     runs-on: ubuntu-latest 
@@ -12,14 +9,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Set up Pulumi
-      - name: Setup Pulumi
-        uses: pulumi/actions@v4
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v3
         with:
-          command: preview
-          stack-name: dev
-          work-dir: iac
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
 
+      # Step 2: Set up Pulumi
+      - name: Login to Pulumi
+        run: pulumi login s3://${{ secrets.AWS_S3_PULUMI}}
 
       # Step 3: Install dependencies (if needed for your Pulumi program)
       - name: Install Dependencies
@@ -30,12 +29,7 @@ jobs:
       # Step 4: Run Pulumi command
       - name: Pulumi Update
         run: | 
-          pwd 
-          #cd /iac
-          #pulumi up --yes
-        env:
-          PULUMI_CONFIG_PASSPHRASE: ${{ secrets.PULUMI_CONFIG_PASSPHRASE }}  # Optional for encrypted configs      
-
+          pwd
 
 
 
