@@ -2,7 +2,7 @@ name: Deploy required aws resources
 on: 
   workflow_dispatch: 
 env:
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}       # Example for AWS
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }} 
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 jobs:
   DeployAWS:
@@ -30,8 +30,9 @@ jobs:
       # Step 4: Run Pulumi command
       - name: Pulumi Update
         run: | 
-          cd /iac
-          pulumi up --yes
+          pwd 
+          #cd /iac
+          #pulumi up --yes
         env:
           PULUMI_CONFIG_PASSPHRASE: ${{ secrets.PULUMI_CONFIG_PASSPHRASE }}  # Optional for encrypted configs      
 
