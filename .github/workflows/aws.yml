@@ -16,7 +16,10 @@ jobs:
       - name: Setup Pulumi
         uses: pulumi/actions@v4
         with:
-          command: preview    # Change to 'up' for deploying or 'destroy' for teardown
+          command: preview
+          stack-name: dev
+          work-dir: iac
+
 
       # Step 3: Install dependencies (if needed for your Pulumi program)
       - name: Install Dependencies
