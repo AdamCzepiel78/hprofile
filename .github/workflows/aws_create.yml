@@ -27,6 +27,10 @@ jobs:
           cd iac 
           pip install -r requirements.txt 
 
+      - name: Zip lambda function
+        run: |
+          cd iac 
+          zip files/rds.zip files/db_backup.sql functions/sql/rds.py
       # Step 4: Run Pulumi command
       - name: Pulumi Update
         run: | 
