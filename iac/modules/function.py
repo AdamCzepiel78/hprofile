@@ -10,7 +10,7 @@ def parse_rds_endpoint(endpoint):
     parts = endpoint.split(":")
     return {
         "host": parts[0],
-        "port": int(parts[1]) if len(parts) > 1 else 3306
+        "port": parts[1] if len(parts) > 1 else 3306
     }
 rds_endpoint = rds_endpoint_uri.apply(parse_rds_endpoint)
 
@@ -20,7 +20,7 @@ db_username = config.get("db_username") or "admin"
 db_password = config.get("dp_password") or "Pa55w.rd"
 db_name = config.get("db_name") or "accounts"
 rds_host = rds_endpoint["host"]
-rds_port = rds_endpoint["port"]
+rds_port = int(rds_endpoint["port"])
 
 
 # Create IAM role for Lambda function
@@ -102,7 +102,7 @@ lambda_function = aws.lambda_.Function("rds-execute-schema",
     environment={
         "variables": {
             "RDS_HOST": rds_host,
-            "RDS_PORT": int(rds_port),
+            "RDS_PORT": rds_port,
             "DB_USER": db_username,
             "DB_PASSWORD": db_password,
             "DB_NAME": db_name,
