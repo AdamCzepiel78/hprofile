@@ -1,0 +1,68 @@
+name: Destroy or Deploy AWS resources
+on: 
+  workflow_dispatch:
+    inputs:
+      choice:
+        type: choice
+        description: Delete or Create AWS resources
+        options: 
+        - create 
+        - delete
+jobs:
+  SetupAWS:
+    uses: ./.github/workflows/aws_common_steps.yml
+    with:
+      aws-region: us-east-1
+      aws-s3-pulumi: ${{ secrets.AWS_S3_PULUMI }}
+      pulumi-password: ${{ secrets.PULUMI_PASSWORD }}
+      aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+  DestroyAWS:
+    needs: SetupAWS
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.choice == 'delete'}}
+    steps: 
+      
+      - name: Install Dependencies
+        run: |
+          pwd 
+          cd iac 
+          pip install -r requirements.txt 
+
+      - name: Pulumi Destroy
+        run: | 
+          cd iac
+          pulumi stack select dev
+          pulumi destroy --yes
+        env:
+          PULUMI_CONFIG_PASSPHRASE: ${{ secrets.PULUMI_PASSWORD }}
+
+  DeployAWS:
+    needs: SetupAWS
+    runs-on: ubuntu-latest 
+    if: ${{ github.event.inputs.choice == 'create'}}
+    steps: 
+      - name: Install Dependencies
+        run: |
+          pwd 
+          cd iac 
+          pip install -r requirements.txt
+
+      - name: Zip lambda function
+        run: |
+          cd iac/functions/sql
+          mkdir package
+          pip install -r requirements.txt -t package
+          cp -r package/* .
+          rm -rf package
+          zip -r rds.zip db_backup.sql rds.py *
+          cp rds.zip ../../files/rds.zip
+     
+      - name: Pulumi Install
+        run: | 
+          cd iac 
+          pulumi stack select dev 
+          pulumi up --yes
+        env:
+          PULUMI_CONFIG_PASSPHRASE: ${{ secrets.PULUMI_PASSWORD }}
