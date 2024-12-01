@@ -20,7 +20,7 @@ db_username = config.get("db_username") or "admin"
 db_password = config.get("dp_password") or "Pa55w.rd"
 db_name = config.get("db_name") or "accounts"
 rds_host = rds_endpoint["host"]
-rds_port = int(rds_endpoint["port"])
+rds_port = rds_endpoint["port"]
 
 
 # Create IAM role for Lambda function
