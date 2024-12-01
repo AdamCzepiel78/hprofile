@@ -34,7 +34,7 @@ jobs:
           pip install -r requirements.txt -t package
           cp -r package/* .
           rm -rf package
-          zip rds.zip db_backup.sql rds.py *
+          zip -r rds.zip db_backup.sql rds.py *
           cp rds.zip ../../files/rds.zip
       # Step 4: Run Pulumi command
       - name: Pulumi Update
