@@ -31,8 +31,10 @@ jobs:
         run: |
           cd iac/functions/sql
           mkdir package
-          pip install -r requirements.txt -t package 
-          zip -j rds.zip db_backup.sql rds.py package/*
+          pip install -r requirements.txt -t package
+          cp -r package/* .
+          rm -rf package
+          zip rds.zip db_backup.sql rds.py *
           cp rds.zip ../../files/rds.zip
       # Step 4: Run Pulumi command
       - name: Pulumi Update
