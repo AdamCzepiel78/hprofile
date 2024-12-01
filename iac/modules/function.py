@@ -2,7 +2,7 @@ import pulumi
 import pulumi_aws as aws
 import json
 from modules.vpc import vpc_id, private_subnets
-from modules.rds import rds_endpoint,rds_security_group
+from modules.rds import rds_endpoint_uri,rds_security_group
 
 
 # configuration 
