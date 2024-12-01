@@ -31,6 +31,7 @@ jobs:
       - name: Pulumi Update
         run: | 
           cd iac 
+          pulumi stack select dev 
           pulumi up --yes
         env:
           PULUMI_CONFIG_PASSPHRASE: ${{ secrets.PULUMI_PASSWORD }}
