@@ -1,4 +1,4 @@
-name: Destroy or Deploy AWS resources
+name: Destroy AWS resources
 on: 
   workflow_dispatch:
     inputs:
@@ -9,29 +9,33 @@ on:
         - create 
         - delete
 jobs:
-  SetupAWS:
-    uses: ./.github/workflows/aws_setup.yml
-    secrets:
-      aws-region: ${{ secrets.AWS_REGION}}
-      aws-s3-pulumi: ${{ secrets.AWS_S3_PULUMI }}
-      pulumi-password: ${{ secrets.PULUMI_PASSWORD }}
-      aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
   DestroyAWS:
-    needs: SetupAWS
     runs-on: ubuntu-latest
     if: ${{ github.event.inputs.choice == 'delete'}}
     steps: 
+      # Step 1: Check out the code
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      # Step 2: Set up Pulumi
+      - name: Login to Pulumi
+        run: pulumi login s3://${{ secrets.AWS_S3_PULUMI}}
+
+      # Step 3: Install dependencies (if needed for your Pulumi program)
       - name: Install Dependencies
         run: |
           pwd 
           cd iac 
           pip install -r requirements.txt 
 
+      # Step 4: Run Pulumi command
       - name: Pulumi Destroy
         run: | 
           cd iac
@@ -39,15 +43,26 @@ jobs:
           pulumi destroy --yes
         env:
           PULUMI_CONFIG_PASSPHRASE: ${{ secrets.PULUMI_PASSWORD }}
-
   DeployAWS:
-    needs: SetupAWS
     runs-on: ubuntu-latest 
     if: ${{ github.event.inputs.choice == 'create'}}
     steps: 
+      # Step 1: Check out the code
       - name: Checkout code
         uses: actions/checkout@v3
-        
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      # Step 2: Set up Pulumi
+      - name: Login to Pulumi
+        run: pulumi login s3://${{ secrets.AWS_S3_PULUMI}}
+
+      # Step 3: Install dependencies (if needed for your Pulumi program)
       - name: Install Dependencies
         run: |
           pwd 
@@ -63,7 +78,7 @@ jobs:
           rm -rf package
           zip -r rds.zip db_backup.sql rds.py *
           cp rds.zip ../../files/rds.zip
-     
+      # Step 4: Run Pulumi command
       - name: Pulumi Install
         run: | 
           cd iac 
