@@ -1,4 +1,4 @@
-name: Deploy required aws resources
+name: Deploy AWS resources
 on: 
   workflow_dispatch: 
 jobs:
@@ -30,7 +30,10 @@ jobs:
       # Step 4: Run Pulumi command
       - name: Pulumi Update
         run: | 
-          pwd
-
+          cd iac 
+          pulumi up --yes
+        env:
+          PULUMI_CONFIG_PASSPHRASE: ${{ secrets.PULUMI_PASSWORD }}
+          
 
 
