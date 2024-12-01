@@ -10,8 +10,8 @@ config = pulumi.Config('rds')
 db_username = config.get("db_username") or "admin"
 db_password = config.get("dp_password") or "Pa55w.rd"
 db_name = config.get("db_name") or "accounts"
-rds_host = rds_endpoint.split(":")[0]
-rds_port = rds_endpoint.split(":")[1]
+rds_host = rds_endpoint_uri.split(":")[0]
+rds_port = rds_endpoint_uri.split(":")[1]
 
 
 # Create IAM role for Lambda function
