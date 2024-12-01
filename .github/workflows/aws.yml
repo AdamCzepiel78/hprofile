@@ -23,7 +23,8 @@ jobs:
       # Step 3: Install dependencies (if needed for your Pulumi program)
       - name: Install Dependencies
         run: |
-          cd /iac 
+          pwd 
+          cd iac 
           pip install -r requirements.txt 
 
       # Step 4: Run Pulumi command
