@@ -37,7 +37,7 @@ jobs:
           zip -r rds.zip db_backup.sql rds.py *
           cp rds.zip ../../files/rds.zip
       # Step 4: Run Pulumi command
-      - name: Pulumi Update
+      - name: Pulumi Install
         run: | 
           cd iac 
           pulumi stack select dev 

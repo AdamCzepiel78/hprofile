@@ -28,7 +28,7 @@ jobs:
           pip install -r requirements.txt 
 
       # Step 4: Run Pulumi command
-      - name: Pulumi Update
+      - name: Pulumi Destroy
         run: | 
           cd iac 
           pulumi stack select dev
