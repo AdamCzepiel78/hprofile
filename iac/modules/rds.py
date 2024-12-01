@@ -57,7 +57,7 @@ rds_instance = aws.rds.Instance("gh-actions-instance",
     }
 )
 # env vars for lambda job 
-rds_endpoint =  rds_instance.endpoint
+rds_endpoint_uri =  rds_instance.endpoint
 
 # Export the RDS instance endpoint
 pulumi.export("rds_endpoint", rds_instance.endpoint)
