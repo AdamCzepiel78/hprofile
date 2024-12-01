@@ -5,13 +5,22 @@ from modules.vpc import vpc_id, private_subnets
 from modules.rds import rds_endpoint_uri,rds_security_group
 
 
+def parse_rds_endpoint(endpoint):
+    # Split the endpoint into host and port
+    parts = endpoint.split(":")
+    return {
+        "host": parts[0],
+        "port": int(parts[1]) if len(parts) > 1 else 3306
+    }
+rds_endpoint = rds_endpoint_uri.apply(parse_rds_endpoint)
+
 # configuration 
 config = pulumi.Config('rds')
 db_username = config.get("db_username") or "admin"
 db_password = config.get("dp_password") or "Pa55w.rd"
 db_name = config.get("db_name") or "accounts"
-rds_host = rds_endpoint_uri.split(":")[0]
-rds_port = rds_endpoint_uri.split(":")[1]
+rds_host = rds_endpoint["host"]
+rds_port = rds_endpoint["port"]
 
 
 # Create IAM role for Lambda function
